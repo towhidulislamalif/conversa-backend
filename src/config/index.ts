@@ -7,6 +7,7 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 
 // Configuration object with environment variables
 const config = {
+  node_env: process.env.NODE_ENV,
   port: process.env.PORT,
   origin: process.env.ORIGIN,
   mongodbURL: process.env.MONGODB_URL,
