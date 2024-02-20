@@ -5,7 +5,7 @@ import { IUser, IUserMethods, UserModel } from '../interface/user.interface';
 import config from '../config';
 
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
-  name: { type: String, trim: true, required: true },
+  name: { type: String, lowercase: true, trim: true, required: true },
   username: { type: String, trim: true, required: true, unique: true },
   email: {
     type: String,
@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
     required: [true, 'Date of birth is required'],
     validate: {
       validator: (value: string) =>
-        /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/.test(value),
+        /^(0[1-9]|[12][0-9]|3[01])(\/|-)(0[1-9]|1[1,2])(\/|-)(19|20)\d{2}/.test(value),
       message: 'Please enter a valid date of birth in DD/MM/YYYY format',
     },
   },

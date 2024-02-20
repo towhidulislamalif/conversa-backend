@@ -32,6 +32,12 @@ app.get('/', (_, res) => {
   });
 });
 
+// Import routes
+import routes from './routes/index';
+
+// API routes
+app.use('/api/v1', routes);
+
 // Not found route
 app.use((_, res) => {
   res.status(404).json({
