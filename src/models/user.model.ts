@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import { IUser, IUserMethods, UserModel } from '../interface/user.interface';
 import config from '../config';
+import { IUser, IUserMethods, UserModel } from '../interface/user.interface';
 
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
-  name: { type: String, lowercase: true, trim: true, required: true },
-  username: { type: String, trim: true, required: true, unique: true },
+  firstname: { type: String, lowercase: true, trim: true, required: true },
+  lastname: { type: String, lowercase: true, trim: true, required: true },
   email: {
     type: String,
     trim: true,
@@ -32,18 +32,17 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
     validate: {
       validator: (value: string) =>
         /^(0[1-9]|[12][0-9]|3[01])(\/|-)(0[1-9]|1[1,2])(\/|-)(19|20)\d{2}/.test(value),
-      message: 'Please enter a valid date of birth in DD/MM/YYYY format',
+      message: 'Please enter a valid date of birth in DD-MM-YYYY format',
     },
   },
   gender: {
     type: String,
     enum: {
-      values: ['male', 'female', 'other'],
-      message: 'Gender must be either "male" or "female" or "other"',
+      values: ['male', 'female'],
+      message: 'Gender must be either "male" or "female"',
     },
   },
-  profilePicture: { type: String, default: '' },
-  status: { type: String, default: 'offline' },
+  avatar: { type: String, default: '' },
 });
 
 // Middleware to hash the password before saving
@@ -64,8 +63,8 @@ userSchema.methods.generateAccessToken = function (): string {
   return jwt.sign(
     {
       _id: this._id,
-      name: this.name,
-      username: this.username,
+      firstname: this.firstname,
+      lastname: this.lastname,
       email: this.email,
     },
     config.access_token_secret as string,
@@ -84,5 +83,4 @@ userSchema.methods.generateRefreshToken = function (): string {
   );
 };
 
-// Export the User model
 export const User = mongoose.model<IUser, UserModel>('User', userSchema);

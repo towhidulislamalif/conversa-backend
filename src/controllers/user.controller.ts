@@ -2,13 +2,12 @@ import config from '../config';
 import { User } from '../models/user.model';
 import APIError from '../utils/APIError';
 import asyncRequestHandler from '../utils/asyncRequestHandler';
-import uploadFileToCloudinary from '../utils/cloudinary';
 import sendAPIResponse from '../utils/sendAPIResponse';
 
 export const registerUser = asyncRequestHandler(async (req, res) => {
-  const { name, username, email, password, dateOfBirth, gender, status } = req.body;
+  const { firstname, lastname, email, password, dateOfBirth, gender } = req.body;
 
-  if (!name || !username || !email || !password || !dateOfBirth || !gender) {
+  if (!firstname || !lastname || !email || !password || !dateOfBirth || !gender) {
     throw new APIError(400, 'All fields are required');
   }
 
@@ -17,25 +16,13 @@ export const registerUser = asyncRequestHandler(async (req, res) => {
     throw new APIError(409, 'User already registered');
   }
 
-  const identifier = `${name.replace(/\s/g, '')}`;
-  let profilePicture;
-
-  // If a profile picture file is provided, upload it to Cloudinary
-  const pictureFilePath = req.file?.path;
-  if (pictureFilePath) {
-    const uploadedPicture = await uploadFileToCloudinary(pictureFilePath, identifier);
-    profilePicture = uploadedPicture?.url;
-  }
-
   const createdUser = await User.create({
-    name,
-    username,
+    firstname,
+    lastname,
     email,
     password,
     dateOfBirth,
     gender,
-    profilePicture,
-    status,
   });
 
   const newUser = await User.findOne({ _id: createdUser._id }).select('-password');

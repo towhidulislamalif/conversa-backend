@@ -1,16 +1,14 @@
+/* eslint-disable no-unused-vars */
 import mongoose from 'mongoose';
 
-/* eslint-disable no-unused-vars */
-
 export interface IUser {
-  name: string;
-  username: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
   dateOfBirth: string;
-  gender: 'male' | 'female' | 'other';
-  profilePicture: string;
-  status: string;
+  gender?: 'male' | 'female' | 'other';
+  avatar: string;
 }
 
 export interface IUserMethods {
